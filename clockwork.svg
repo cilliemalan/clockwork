@@ -10,7 +10,7 @@
 	onload = function() {
 		
 		var escapement = { element: document.getElementById("Escapement_1_"), pivot: { x: 289.661, y: 159.713 } };
-		var escapement_lever = { element: document.getElementById("Escapement_Lever_1_"), pivot: { x: 298.395, y: 75.465 } };
+		var escapement_lever = { element: document.getElementById("Escapement_Lever_1_"), pivot: { x: 290.767 , y: 55.13  } };
 		var gear64 = { element: document.getElementById("Gear_64"), pivot: { x: 138.586, y: 171.916 } };
 		var gear12 = { element: document.getElementById("Gear_12"), pivot: { x: 289.951, y: 159.41 } };
 		var gear8 = { element: document.getElementById("Gear_8"), pivot: { x: 138.589, y: 171.917 } };
@@ -28,12 +28,13 @@
 			{ period: 43200, gears: [gear48] }
 		];
 	
-		function updateGears(pos) {
+		function updateGears(pos) {		
+		
 			for(var i=0;i<pairs.length;i++) {
 				var period = pairs[i].period;
 				var gears = pairs[i].gears;
 			
-				var theta = (pos / period) * 360 *  500;
+				var theta = (pos / period) * 360 * 0;
 				
 				if(i%2==0) theta = -theta;
 			
@@ -47,6 +48,10 @@
 					element.setAttribute("transform", transform);
 				}
 			}
+			
+			var 2s = (pos % 2) / 2;
+			var min_lev = -11;
+			var max_lev = 9;
 		}
 	
 	
