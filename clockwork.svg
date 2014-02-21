@@ -10,7 +10,7 @@
 	onload = function() {
 		
 		var escapement = { element: document.getElementById("Escapement_1_"), pivot: { x: 289.661, y: 159.713 } };
-		var escapement_lever = { element: document.getElementById("Escapement_Lever_1_"), pivot: { x: 290.767 , y: 55.13  } };
+		var escapement_lever = { element: document.getElementById("Escapement_Lever_and_Pendulum"), pivot: { x: 290.767 , y: 55.13  } };
 		var gear64 = { element: document.getElementById("Gear_64"), pivot: { x: 138.586, y: 171.916 } };
 		var gear12 = { element: document.getElementById("Gear_12"), pivot: { x: 289.951, y: 159.41 } };
 		var gear8 = { element: document.getElementById("Gear_8"), pivot: { x: 138.589, y: 171.917 } };
@@ -27,6 +27,38 @@
 			{ period: 9000, gears: [gear40, gear10] },
 			{ period: 43200, gears: [gear48] }
 		];
+		
+		
+		
+		var pendulum = {mass: 100, length:400, theta: (Math.PI/2) - Math.PI*0.9, omega: 0, alpha:0};
+		pendulum.J = pendulum.mass * pendulum.length * pendulum.length / 500;
+		var lastTime = 0;
+		function getPendulumRotation(time) {
+			var deltaT = time - lastTime;
+			
+			if(deltaT > 0.05) deltaT = 0.05;
+			if(deltaT < 0) deltaT = 0.05;
+			
+			
+			/* Velocity Verlet */
+			/* Calculate current position from last frame's position, velocity, and acceleration */
+			pendulum.theta += pendulum.omega * deltaT + ( 0.5 * pendulum.alpha * deltaT * deltaT );
+
+			/* Calculate forces from current position. */
+			var T = pendulum.mass * 9.81 * Math.cos(pendulum.theta) * pendulum.length;
+
+			/* Current acceleration */
+			var alpha = T / pendulum.J;
+
+			/* Calculate current velocity from last frame's velocity and 
+				average of last frame's acceleration with this frame's acceleration. */
+			pendulum.omega += 0.5 * (alpha + pendulum.alpha) * deltaT;
+    
+			/* Update acceleration */
+			pendulum.alpha = alpha;
+
+			return pendulum.theta;
+		}
 	
 		function updateGears(pos) {		
 		
@@ -34,7 +66,7 @@
 				var period = pairs[i].period;
 				var gears = pairs[i].gears;
 			
-				var theta = (pos / period) * 360 * 0;
+				var theta = ((pos / period) * 360) % 360;
 				
 				if(i%2==0) theta = -theta;
 			
@@ -49,9 +81,18 @@
 				}
 			}
 			
-			var 2s = (pos % 2) / 2;
-			var min_lev = -11;
-			var max_lev = 9;
+			/**
+			//var 2s = (pos % 2) / 2;
+			//var min_lev = -11;
+			//var max_lev = 9;
+			
+			elpivot = escapement_lever.pivot;
+			elelement = escapement_lever.element;
+			
+			var rot = getPendulumRotation(pos);
+			var transform = "rotate(" + rot + " " + elpivot.x + " " + elpivot.y + ")";
+			elelement.setAttribute("transform", transform);
+			*/
 		}
 	
 	
