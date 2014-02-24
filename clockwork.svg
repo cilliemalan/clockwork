@@ -19,6 +19,9 @@
 		var gear40 = { element: document.getElementById("Gear_40"), pivot: { x: 407.567, y: 288.954 } };
 		var gear10 = { element: document.getElementById("Gear_10"), pivot: { x: 407.566, y: 288.957 } };
 		var gear48 = { element: document.getElementById("Gear_48"), pivot: { x: 295.599, y: 288.957 } };
+		
+		document.getElementById("Gear_90").setAttribute("fill", "rgba(0,0,0,0)");
+		document.getElementById("Gear_64").setAttribute("fill", "rgba(0,0,0,0)");
 	
 		var pairs = [
 			{ period: 60, gears: [gear12, escapement] },
@@ -28,39 +31,50 @@
 			{ period: 43200, gears: [gear48] }
 		];
 		
+		getPendulumRotation = function(time) {
+			return Math.sin(time *  Math.PI) * 6.5 * Math.PI / 180 + Math.PI / 2 - 2.0 * Math.PI / 180;
+		}
 		
-		
-		var pendulum = {mass: 100, length:1000, theta: (Math.PI/2) - Math.PI*8/180, omega: 0, alpha:0};
-		pendulum.J = pendulum.mass * pendulum.length * pendulum.length / 500;
-		var lastTime = 0;
-		function getPendulumRotation(time) {
-			var deltaT = time - lastTime;
-			
-			if(deltaT > 0.05) deltaT = 0.05;
-			if(deltaT < 0) deltaT = 0.05;
-			
-			
-			/* Velocity Verlet */
-			/* Calculate current position from last frame's position, velocity, and acceleration */
-			pendulum.theta += pendulum.omega * deltaT + ( 0.5 * pendulum.alpha * deltaT * deltaT );
-
-			/* Calculate forces from current position. */
-			var T = pendulum.mass * 9.81 * Math.cos(pendulum.theta) * pendulum.length;
-
-			/* Current acceleration */
-			var alpha = T / pendulum.J;
-
-			/* Calculate current velocity from last frame's velocity and 
-				average of last frame's acceleration with this frame's acceleration. */
-			pendulum.omega += 0.5 * (alpha + pendulum.alpha) * deltaT;
-    
-			/* Update acceleration */
-			pendulum.alpha = alpha;
-
-			return pendulum.theta;
+		getPenulumVelocity = function(time) {
+			return Math.cos(time *  Math.PI) * 6.5 * Math.PI / 180;
 		}
 	
-		function updateGears(pos) {		
+		var rengage;
+		var lengage;
+		function updateGears(pos) {
+		
+			
+			elpivot = escapement_lever.pivot;
+			elelement = escapement_lever.element;
+			
+
+			var rot = getPendulumRotation(pos) * 180 / Math.PI - 90;
+			var vel = getPenulumVelocity(pos);
+			
+			lastpos = pos;
+			
+			var transform = "rotate(" + rot + " " + elpivot.x + " " + elpivot.y + ")";
+			elelement.setAttribute("transform", transform);
+
+			var offset;
+			if(vel > 0) {
+				if(rot > -0.1) {
+					if(rengage===null) rengage = pos;
+				}
+			} else {
+				if(rot <= -3.9) {
+					rengage = null;
+					lengage = rengage;
+				}
+			}
+			
+			if(rengage !== null) {
+				var t = pos - rengage;
+			
+			
+				pos = rengage - rot / 5;
+			}
+		
 		
 			for(var i=0;i<pairs.length;i++) {
 				var period = pairs[i].period;
@@ -81,18 +95,7 @@
 				}
 			}
 			
-
-			//var 2s = (pos % 2) / 2;
-			//var min_lev = -11;
-			//var max_lev = 9;
 			
-			elpivot = escapement_lever.pivot;
-			elelement = escapement_lever.element;
-			
-			var rot = getPendulumRotation(pos) * 180 / Math.PI - 90;
-			var transform = "rotate(" + rot + " " + elpivot.x + " " + elpivot.y + ")";
-			elelement.setAttribute("transform", transform);
-
 		}
 	
 	
@@ -101,8 +104,9 @@
 			var time = new Date();
 			var pos = time.getMilliseconds() * 0.001 + time.getSeconds() + time.getMinutes() * 60 + (time.getHours() % 12) * 3600;
 			
+			pos = pos / 3;
 			updateGears(pos);
-		}, 33);
+		}, 11);
 	}
 	
 	
