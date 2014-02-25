@@ -56,24 +56,16 @@
 			var transform = "rotate(" + rot + " " + elpivot.x + " " + elpivot.y + ")";
 			elelement.setAttribute("transform", transform);
 
-			var offset;
-			if(vel > 0) {
-				if(rot > -0.1) {
-					if(rengage===null) rengage = pos;
-				}
-			} else {
-				if(rot <= -3.9) {
-					rengage = null;
-					lengage = rengage;
-				}
-			}
+			var pi = Math.PI;
+			var ff = (pos%2)<1.14 && (pos%2)>0.09 ?
+				-(Math.sin((pos*180-20)*pi/180) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.0+2.5*pi/180+6*pos*pi/180 :
+				+(Math.sin((pos*180-17)*pi/180) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.2+7.8*pi/180+6*pos*pi/180;
 			
-			if(rengage !== null) {
-				var t = pos - rengage;
+			//if(mod(S,2)<1.14 & mod(S,2)>0.09 ,
+			//	-(sin(S *  180-20) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.0+2.5*pi/180+6*S*pi/180,
+			//	+(sin(S *  180-17) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.2+7.8*pi/180+6*S*pi/180)
 			
-			
-				pos = rengage - rot / 5;
-			}
+			pos = ff * pi * 3 + 0.7;
 		
 		
 			for(var i=0;i<pairs.length;i++) {
@@ -104,7 +96,7 @@
 			var time = new Date();
 			var pos = time.getMilliseconds() * 0.001 + time.getSeconds() + time.getMinutes() * 60 + (time.getHours() % 12) * 3600;
 			
-			pos = pos / 3;
+			pos = pos;
 			updateGears(pos);
 		}, 11);
 	}
