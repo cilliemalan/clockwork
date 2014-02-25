@@ -56,16 +56,18 @@
 			var transform = "rotate(" + rot + " " + elpivot.x + " " + elpivot.y + ")";
 			elelement.setAttribute("transform", transform);
 
+
+			var s = pos;
 			var pi = Math.PI;
-			var ff = (pos%2)<1.14 && (pos%2)>0.09 ?
-				-(Math.sin((pos*180-20)*pi/180) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.0+2.5*pi/180+6*pos*pi/180 :
-				+(Math.sin((pos*180-17)*pi/180) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.2+7.8*pi/180+6*pos*pi/180;
+			var ff = (s%2)<1.14 && (s%2)>0.09 ?
+				-(Math.sin((s*180-20)*pi/180) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.0+2.5*pi/180+6*s*pi/180 :
+				+(Math.sin((s*180-17)*pi/180) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.2+7.8*pi/180+6*s*pi/180;
 			
 			//if(mod(S,2)<1.14 & mod(S,2)>0.09 ,
 			//	-(sin(S *  180-20) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.0+2.5*pi/180+6*S*pi/180,
 			//	+(sin(S *  180-17) * 6.5 * pi / 180 - 2.0 * pi / 180) * 1.2+7.8*pi/180+6*S*pi/180)
 			
-			pos = ff * pi * 3 + 0.7;
+			pos = (ff * 180 / pi) * 60 / 360 + 3;
 		
 		
 			for(var i=0;i<pairs.length;i++) {
