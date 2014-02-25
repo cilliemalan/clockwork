@@ -19,9 +19,6 @@
 		var gear40 = { element: document.getElementById("Gear_40"), pivot: { x: 407.567, y: 288.954 } };
 		var gear10 = { element: document.getElementById("Gear_10"), pivot: { x: 407.566, y: 288.957 } };
 		var gear48 = { element: document.getElementById("Gear_48"), pivot: { x: 295.599, y: 288.957 } };
-		
-		document.getElementById("Gear_90").setAttribute("fill", "rgba(0,0,0,0)");
-		document.getElementById("Gear_64").setAttribute("fill", "rgba(0,0,0,0)");
 	
 		var pairs = [
 			{ period: 60, gears: [gear12, escapement] },
